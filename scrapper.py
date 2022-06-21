@@ -6,7 +6,7 @@ import time
 from bs4 import BeautifulSoup
 
 # Where chromedrive is located, has to be installed for web scraping.
-DRIVER_PATH = "C:\\Users\\Dev\\Desktop\\chromedriver.exe"
+DRIVER_PATH = "ADD PATH TO THE CHROMEDRIVER HERE"
 
 # Declaring the webdriver to be used in chrome.
 driver = webdriver.Chrome(executable_path=DRIVER_PATH)
