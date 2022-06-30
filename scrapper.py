@@ -5,8 +5,10 @@ import time
 # Imported for parsing and finding appropriate data in page source.
 from bs4 import BeautifulSoup
 
+links = []
+
 # Where chromedrive is located, has to be installed for web scraping.
-DRIVER_PATH = "ADD PATH TO THE CHROMEDRIVER HERE"
+DRIVER_PATH = "C:\\Users\\Dev\\Desktop\\chromedriver.exe"
 
 # Declaring the webdriver to be used in chrome.
 driver = webdriver.Chrome(executable_path=DRIVER_PATH)
@@ -25,11 +27,18 @@ job_element = soup.find("table")
 #Getting the child element out of the table this will give us a list.
 job_profiles = job_element.find_all('td')
 
+link_profiles = job_element.find_all('a')
+
 #looping through all child elements to get indiviusal data sets.
+
+
 
 undistributedJobs = []
 for job in job_profiles:
     undistributedJobs.append(job.text)
+    
+for link in link_profiles:
+    links.append(link.get("href"))
 
 
 print(undistributedJobs)
@@ -50,10 +59,5 @@ n = 3
 # Dividing and sorting jobs approprately
 allJobsSorted = list(divide_chunks(undistributedJobs, n))
 print (allJobsSorted)
+print(links)
 driver.quit()
-
-   
-
-
-        
-
