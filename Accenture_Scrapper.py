@@ -1,5 +1,4 @@
 from selenium import webdriver
-import time
 from bs4 import BeautifulSoup
 
 DRIVER_PATH = r"C:\Users\91939\Desktop\chromedriver.exe"
@@ -8,61 +7,48 @@ driver = webdriver.Chrome(executable_path=DRIVER_PATH)
 
 driver.get("https://www.accenture.com/in-en/careers/jobsearch?src=inFY22pscgoogle&")
 
-# time.sleep(5)
-driver.implicitly_wait(8)a
+driver.implicitly_wait(8)
 
 soup = BeautifulSoup(driver.page_source, "html.parser")
 
-Entire_Element = soup.find('div', class_='module job-card-wrapper col-md-12 col-xs-12 col-sm-12 corporate-regular background-white list-view')
+Entire_Job = soup.find('div', class_='upper-set-jobs job-listing-block col-xs-12')
 
-Location = Entire_Element.find("div", class_='row').text
+Location = Entire_Job.find_all('span', class_='corporate-semibold job-city-state')
 
-jobTitle = Entire_Element.find("a").text
+Locations = []
+for loc in Location:
+    Locations.append(loc.text)
 
-OverallJob = Entire_Element.find("span", class_ = 'areas-of-interest corporate-semibold').text
+print(Locations)
 
-BusinessArea = Entire_Element.find("p", class_ = 'job-business-area corporate-regular').text
+jobTitle = Entire_Job.find_all("a")
 
-jobLink = Entire_Element.a['href']
+JobTitles = []
+for titles in jobTitle:
+    JobTitles.append(titles.text)
 
-print(jobLink)
-print(Location)
-print(jobTitle)
-print(OverallJob)
-print(BusinessArea)
+print(JobTitles)
 
+OverallJob = Entire_Job.find_all("span", class_ = 'areas-of-interest corporate-semibold')
 
+OverallJobs = []
+for jobs in OverallJob:
+    OverallJobs.append(jobs.text)
 
+print(OverallJobs)
 
-from selenium import webdriver
-import time
-from bs4 import BeautifulSoup
+BusinessArea = Entire_Job.find_all("p", class_ = 'job-business-area corporate-regular')
 
-DRIVER_PATH = r"C:\Users\91939\Desktop\chromedriver.exe"
+BAreas = []
+for areas in BusinessArea:
+    BAreas.append(areas.text)
 
-driver = webdriver.Chrome(executable_path=DRIVER_PATH)
+print(BAreas)
 
-driver.get("https://www.accenture.com/in-en/careers/jobsearch?src=inFY22pscgoogle&")
+jobLink = Entire_Job.find_all('a')
 
-# time.sleep(5)
-driver.implicitly_wait(8)a
+JLinks = []
+for links in jobLink:
+    JLinks.append(links.get("href"))
 
-soup = BeautifulSoup(driver.page_source, "html.parser")
-
-Entire_Element = soup.find('div', class_='module job-card-wrapper col-md-12 col-xs-12 col-sm-12 corporate-regular background-white list-view')
-
-Location = Entire_Element.find("div", class_='row').text
-
-jobTitle = Entire_Element.find("a").text
-
-OverallJob = Entire_Element.find("span", class_ = 'areas-of-interest corporate-semibold').text
-
-BusinessArea = Entire_Element.find("p", class_ = 'job-business-area corporate-regular').text
-
-jobLink = Entire_Element.a['href']
-
-print(jobLink)
-print(Location)
-print(jobTitle)
-print(OverallJob)
-print(BusinessArea)
+print(JLinks)
