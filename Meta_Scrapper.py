@@ -39,5 +39,9 @@ OverallJob = []
 OverallJob.append(LocationsCategoryOverallJobs[2::3])
 print(OverallJob)
 
-
+# This only prints the URL after "https://www.metacareers.com/jobs". Need to add this URL after the meta url in the database!
+URL = Entire_Element.find_all('a', class_ = '_8sef')
+JURL = []
+for links in URL:
+    JURL.append(links.get("href"))
 
