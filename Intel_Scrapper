@@ -1,0 +1,41 @@
+from selenium import webdriver
+import time
+from bs4 import BeautifulSoup
+
+DRIVER_PATH = r"C:\Users\91939\Desktop\chromedriver.exe"
+
+driver = webdriver.Chrome(executable_path=DRIVER_PATH)
+
+driver.get("https://jobs.intel.com/page/show/search-results#t=Jobs&sort=relevancy&layout=table&f:@countryfullname=[India]")
+
+time.sleep(5)
+
+soup = BeautifulSoup(driver.page_source, "html.parser")
+
+EntireElement = soup.find("div", class_ ='coveo-result-list-container coveo-list-layout-container')
+
+jobTitle = EntireElement.find_all("h3", class_ = 'title')
+JobTitles = []
+for jobs in jobTitle:
+    JobTitles.append(jobs.text)
+print(JobTitles)
+
+jobLocation = EntireElement.find_all("span", class_ = 'coveo-accessible-button coveo-selected coveo-clickable')
+jobLocations = []
+for loc in jobLocation:
+    jobLocations.append(loc.text)
+print(jobLocations)
+
+jobsCategory = EntireElement.find_all("span", class_ = 'coveo-accessible-button coveo-clickable')
+JobCategories = []
+for cat in jobsCategory:
+    if cat.text != "Experienced Hire":
+        JobCategories.append(cat.text)
+print(JobCategories)
+
+jobLink = EntireElement.find_all("a", class_ = 'CoveoResultLink')
+jobLinks = []
+for links in jobLink:
+    jobLinks.append(links.get("href"))
+print(jobLinks)
+driver.quit()
