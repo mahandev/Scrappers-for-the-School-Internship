@@ -1,0 +1,40 @@
+from selenium import webdriver
+import time
+from bs4 import BeautifulSoup
+
+DRIVER_PATH = r"C:\Users\91939\Desktop\chromedriver.exe"
+
+driver = webdriver.Chrome(executable_path=DRIVER_PATH)
+
+driver.get("https://eeho.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/requisitions?location=India&locationId=300000000106947")
+
+time.sleep(5)
+
+soup = BeautifulSoup(driver.page_source, "html.parser")
+
+EntireElement = soup.find("ul", class_ ='joblist-grid')
+
+jobTitle = EntireElement.find_all("h3", class_ = 'job-title')
+JobTitles = []
+for jobs in jobTitle:
+    JobTitles.append(jobs.text)
+print(JobTitles)
+
+jobLocation = EntireElement.find_all("span", class_ = 'job-location')
+jobLocations = []
+for loc in jobLocation:
+    jobLocations.append(loc.text)
+print(jobLocations)
+
+jobsTask = EntireElement.find_all("span", {"data-bind":"text: job.shortDescription"})
+JobTasks = []
+for tasks in jobsTask:
+    JobTasks.append(tasks.text)
+print(JobTasks)
+
+jobLink = EntireElement.find_all("a", class_ = 'joblist-tile')
+jobLinks = []
+for links in jobLink:
+    jobLinks.append(links.get("href"))
+print(jobLinks)
+driver.quit()
