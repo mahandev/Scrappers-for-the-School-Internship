@@ -1,0 +1,92 @@
+# Imported for getting page source.
+from turtle import pos
+from selenium import webdriver
+#Imported for adding buffer time for the program to load.
+import time
+# Imported for parsing and finding appropriate data in page source.
+from bs4 import BeautifulSoup
+
+from pymongo import MongoClient
+client = MongoClient("mongodb+srv://akahinternship:akahinternship@cluster0.wvqnd.mongodb.net/?retryWrites=true&w=majority")
+db = client["jobs"]
+collection = db["joblist"]
+
+links = []
+
+
+# Where chromedrive is located, has to be installed for web scraping.
+DRIVER_PATH = "C:\\Users\\Dev\\Desktop\\chromedriver.exe"
+
+# Declaring the webdriver to be used in chrome.
+driver = webdriver.Chrome(executable_path=DRIVER_PATH)
+
+#fethcing the website using the driver.
+driver.get("https://careers.google.com/jobs/results/?company=Google&company=Google%20Fiber&company=YouTube&employment_type=FULL_TIME&gclid=CjwKCAjwk_WVBhBZEiwAUHQCmarWCZsOwETEXAUi3VMgsMY0tP0mgZ8ybdnd4GUnvWpvinU8G040EhoCFgoQAvD_BwE&gclsrc=aw.ds&hl=en_US&jlo=en_US&location=Switzerland&q=&sort_by=relevance&src=Online%2FHouse%20Ads%2FBKWS_Cloud_APAC")
+
+#waiting for the page to load completey, this is a way to keep any internet realted issues out of the way.
+time.sleep(5)
+#Parsing the page source in a HTML format that bs4 understands.
+soup = BeautifulSoup(driver.page_source, "html.parser")
+
+#Getting the parent element of the element we are interested in.
+job_element = soup.find("ol")
+
+#Getting the child element out of the table this will give us a list.
+job_profiles = job_element.find_all('span', {"itemprop":"addressLocality"})
+job_name = job_element.find_all('h2', {"itemprop":"title"})
+job_quals = job_element.find_all('div', {"itemprop":"qualifications"})
+job_links = job_element.find_all('a', {"class":"gc-card"})
+
+
+#looping through all child elements to get indiviusal data sets.
+
+
+
+undistributedOffice = []
+distributedOffice = []
+undistributedTitles = []
+distributedTitles = []
+undistributedQuals = []
+distributedQuals = []
+undistributedLinks = []
+distributedLinks = []
+
+
+for office_location in job_profiles:
+    undistributedOffice.append(office_location.text)
+
+
+for office in undistributedOffice:
+    distributedOffice.append((office.replace(' ','')).replace('\n','').replace(',',''))
+
+
+for title in job_name:
+    undistributedTitles.append(title.text)
+
+    
+for title in undistributedTitles:
+    distributedTitles.append(title.replace(' ','').replace('\n',''))
+
+for quals in job_quals:
+    undistributedQuals.append(quals.text)
+
+for quals in undistributedQuals:
+    distributedQuals.append((quals.replace('\n','')))
+
+for links in job_links:
+    undistributedLinks.append(links.get("href"))
+
+for links in undistributedLinks:
+    distributedLinks.append((links.replace('\n','').replace(' ','')))
+
+print(distributedOffice)
+print(len(distributedOffice))
+print(distributedTitles)
+print(len(distributedTitles))
+print(distributedQuals)
+print(len(distributedQuals))
+print(distributedLinks)
+print(len(distributedLinks))
+for i in range(0, len(distributedTitles)):
+    post = {"company":"Google","Job_Title":distributedTitles[i], "Job_Category":"~", "Job_Location":distributedOffice[i], "Job_Qualifications":distributedQuals[i], "Job_Link":"careers.google.com" + distributedLinks[i]}
+    collection.insert_one(post)
