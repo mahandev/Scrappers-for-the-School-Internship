@@ -2,6 +2,11 @@ from selenium import webdriver
 import time
 from bs4 import BeautifulSoup
 
+from pymongo import MongoClient
+client = MongoClient("mongodb+srv://akahinternship:akahinternship@cluster0.wvqnd.mongodb.net/?retryWrites=true&w=majority")
+db = client["jobs"]
+collection = db["joblist"]
+
 DRIVER_PATH = r"C:\Users\91939\Desktop\chromedriver.exe"
 
 driver = webdriver.Chrome(executable_path=DRIVER_PATH)
@@ -18,23 +23,22 @@ jobTitle = EntireElement.find_all("h3", class_ = 'job-title')
 JobTitles = []
 for jobs in jobTitle:
     JobTitles.append(jobs.text)
-print(JobTitles)
+
 
 jobLocation = EntireElement.find_all("span", class_ = 'job-location')
 jobLocations = []
 for loc in jobLocation:
     jobLocations.append(loc.text)
-print(jobLocations)
 
-jobsTask = EntireElement.find_all("span", {"data-bind":"text: job.shortDescription"})
-JobTasks = []
-for tasks in jobsTask:
-    JobTasks.append(tasks.text)
-print(JobTasks)
 
 jobLink = EntireElement.find_all("a", class_ = 'joblist-tile')
 jobLinks = []
 for links in jobLink:
     jobLinks.append(links.get("href"))
-print(jobLinks)
+
+
+for i in range(0, len(JobTitles)):
+    post = {"company":"Oracle","Job_Title":JobTitles[i], "Job_Category":"~", "Job_Location":jobLocations[i], "Job_Qualifications":"~", "Job_Link":jobLinks[i]}
+    collection.insert_one(post)
+
 driver.quit()
